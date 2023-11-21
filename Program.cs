@@ -4,6 +4,7 @@ using NWConsole.Model;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 // See https://aka.ms/new-console-template for more information
 string path = Directory.GetCurrentDirectory() + "\\nlog.config";
@@ -18,7 +19,7 @@ try
     string choice;
     do
     {
-    Console.WriteLine("1) Display Categories");
+        Console.WriteLine("1) Display Categories");
         Console.WriteLine("2) Add Category");
         Console.WriteLine("3) Display Category and related products");
         Console.WriteLine("4) Display all Categories and their related products");
@@ -105,6 +106,56 @@ try
                 }
             }
         }
+        else if (choice == "5")
+        {
+            Product product = new Product();
+            Console.WriteLine("Enter Product Name:");
+            product.ProductName = Console.ReadLine();
+            Console.WriteLine("Enter a Supplier ID:");
+            product.SupplierId = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter a Cateregory ID:");
+            product.CategoryId = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter Quantity per unit:");
+            product.QuantityPerUnit = Console.ReadLine();
+            Console.WriteLine("Enter unit price:");
+            product.UnitPrice = Convert.ToDecimal(Console.ReadLine());
+            Console.WriteLine("enter units in stock:");
+            product.UnitsInStock = Convert.ToShort(Console.ReadLine());
+            Console.WriteLine("Enter units on order:");
+            product.UnitsOnOrder = Convert.toshort(Console.ReadLine());
+            Console.WriteLine("Enter reorder level:");
+            product.ReorderLevel = Convert.ToShort(Console.ReadLine());
+            Console.WriteLine("Is this product discontinued:");
+            product.Discontinued = Convert.ToBoolean(Console.ReadLine());
+
+            ValidationContext context = new ValidationContext(product, null, null);
+            List<ValidationResult> results = new List<ValidationResult>();
+
+            var isValid = Validator.TryValidateObject(product, context, results, true);
+            if (isValid)
+            {
+                // check for unique name
+                if (db.Categories.Any(c => c.CategoryName == product.ProductName))
+                {
+                    // generate validation error
+                    isValid = false;
+                    results.Add(new ValidationResult("Name exists", new string[] { "CategoryName" }));
+                }
+                else
+                {
+                    logger.Info("Validation passed");
+                    // TODO: save category to db
+                }
+            }
+            if (!isValid)
+            {
+                foreach (var result in results)
+                {
+                    logger.Error($"{result.MemberNames.First()} : {result.ErrorMessage}");
+                }
+            }
+
+        }
         Console.WriteLine();
     } while (choice.ToLower() != "q");
 }
@@ -114,3 +165,22 @@ catch (Exception ex)
 }
 
 logger.Info("Program ended");
+
+static Product GetProduct(ProductContext db, Logger logger)
+{
+    var products = db.products.OrderBy(b => p.ProductID);
+    foreach (Product p in products)
+    {
+        Console.WriteLine($"{p.ProductId}: {p.ProductName}");
+    }
+    if (int.TryParse(Console.ReadLine(), out int ProductID))
+    {
+        Product product = db.Products.FirstOrDefault(b => p.ProductID == ProductID);
+        if (product != null)
+        {
+            return product;
+        }
+    }
+    logger.Error("Invalid Product ID");
+    return null;
+}
