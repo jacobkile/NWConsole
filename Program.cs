@@ -106,6 +106,39 @@ try
                 }
             }
         }
+        else if (choice == "")
+        {
+           
+            Console.WriteLine("1) View All Products");
+            Console.WriteLine("2) View All Dicontinued Products");
+            Console.WriteLine("3) View All Active Products");
+            choice = Console.ReadLine();
+
+            if (choice == "1")
+            {
+                var query = db.Products.OrderBy(p => p.ProductId);
+                foreach (var item in query)
+                {
+                    Console.WriteLine($"{item.ProductName}");
+                }
+            }
+            else if (choice == "2")
+            {
+                var query = db.Products.OrderBy(p => p.ProductId).Where(p.discontinued != true);
+                foreach (var item in query)
+                {
+                    Console.WriteLine($"{item.ProductName}");
+                }
+            }
+            else if (choice == "3")
+            {
+                var query = db.Products.OrderBy(p => p.ProductId).Where(p.discontinued != false);
+                foreach (var item in query)
+                {
+                    Console.WriteLine($"{item.ProductName}");
+                }
+            }
+        }
         else if (choice == "5")
         {
             Product product = new Product();
