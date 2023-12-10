@@ -88,7 +88,8 @@ try
             int id = int.Parse(Console.ReadLine());
             Console.Clear();
             logger.Info($"CategoryId {id} selected");
-            Category category = db.Categories.Include("Products").FirstOrDefault(c => c.CategoryId == id);            Console.WriteLine($"{category.CategoryName} - {category.Description}");
+            Category category = db.Categories.Include("Products").FirstOrDefault(c => c.CategoryId == id);            
+            Console.WriteLine($"{category.CategoryName} - {category.Description}");
             foreach (Product p in category.Products)
             {
                 Console.WriteLine($"\t{p.ProductName}");
@@ -199,9 +200,11 @@ catch (Exception ex)
 
 logger.Info("Program ended");
 
+
+
 static Product GetProduct(ProductContext db, Logger logger)
 {
-    var products = db.products.OrderBy(b => p.ProductID);
+    var products = db.Products.OrderBy(b => p.ProductID);
     foreach (Product p in products)
     {
         Console.WriteLine($"{p.ProductId}: {p.ProductName}");
