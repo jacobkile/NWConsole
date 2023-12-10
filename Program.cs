@@ -1,10 +1,11 @@
-﻿﻿using NLog;
+﻿using NLog;
 using System.Linq;
 using NWConsole.Model;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 string path = Directory.GetCurrentDirectory() + "\\nlog.config";
 
@@ -37,17 +38,22 @@ try
             Console.Clear();
             logger.Info("product option {choice} selected", choice);
 
-            if (choice == "1")
+            if (choice == "1") //Add Product
+            {
+                Product product = InputProduct(db, logger);
+                if (product != null)
+                {
+                    db.AddProduct(product);
+                    logger.Info("Product Added - {ProductName}", product.ProductName);
+                }
+            }
+
+            else if (choice == "2") //Edit Product
             {
 
             }
 
-            else if (choice == "2")
-            {
-
-            }
-
-            else if (choice == "3")
+            else if (choice == "3") //Display All Product
             {
                 var query = db.Products.OrderBy(p => p.ProductId);
 
@@ -58,7 +64,7 @@ try
                 }
             }
 
-            else if (choice == "4")
+            else if (choice == "4") //Display Specfic Product
             {
                 
             }
@@ -131,6 +137,67 @@ catch (Exception ex)
 
 logger.Info("Program ended");
 
+Product InputProduct(NWContext db, Logger logger)
+{
+    Product product = new Product();
+
+    Console.WriteLine("Enter Product Name:");
+    product.ProductName = Console.ReadLine();
+
+    // Check if a product with the same name already exists
+    if (db.Products.Any(p => p.ProductName == product.ProductName))
+    {
+        Console.WriteLine("A product with the same name already exists.");
+        return null; // You can return null or handle this case as needed
+    }
+
+    Console.WriteLine("Enter Supplier ID:");
+    if (int.TryParse(Console.ReadLine(), out int supplierId))
+    {
+        product.SupplierId = supplierId;
+    }
+
+    Console.WriteLine("Enter Category ID:");
+    if (int.TryParse(Console.ReadLine(), out int categoryId))
+    {
+        product.CategoryId = categoryId;
+    }
+
+    Console.WriteLine("Enter Quantity Per Unit:");
+    product.QuantityPerUnit = Console.ReadLine();
+
+    Console.WriteLine("Enter Unit Price:");
+    if (decimal.TryParse(Console.ReadLine(), out decimal unitPrice))
+    {
+        product.UnitPrice = unitPrice;
+    }
+
+    Console.WriteLine("Enter Units in Stock:");
+    if (short.TryParse(Console.ReadLine(), out short unitsInStock))
+    {
+        product.UnitsInStock = unitsInStock;
+    }
+
+    Console.WriteLine("Enter Units on Order:");
+    if (short.TryParse(Console.ReadLine(), out short unitsOnOrder))
+    {
+        product.UnitsOnOrder = unitsOnOrder;
+    }
+
+    Console.WriteLine("Enter Reorder Level:");
+    if (short.TryParse(Console.ReadLine(), out short reorderLevel))
+    {
+        product.ReorderLevel = reorderLevel;
+    }
+
+    Console.WriteLine("Is this product discontinued? (true/false):");
+    if (bool.TryParse(Console.ReadLine(), out bool discontinued))
+    {
+        product.Discontinued = discontinued;
+    }
+
+    return product;
+}
 
 // try
 // {
