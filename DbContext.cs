@@ -52,6 +52,6 @@ public class NWContext : DbContext
             .AddJsonFile($"appsettings.json");
             
         var config = configuration.Build();
-        optionsBuilder.UseSqlServer(@config["BlogsConsole:ConnectionString"]);
+        optionsBuilder.UseSqlServer(@config["Northwind:ConnectionStrings"]);
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace NWConsole.Model
 {
     public partial class OrderDetail
     {
+        [Key]
         public int OrderDetailsId { get; set; }
         public int OrderId { get; set; }
         public int ProductId { get; set; }
