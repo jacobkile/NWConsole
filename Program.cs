@@ -226,7 +226,12 @@ try
 
             if (choice == "1")
             {
-
+                Category category = InputCategory(logger);
+                if (category != null)
+                {
+                    db.AddCategory(category);
+                    logger.Info("Category Added - {CategoryName}", category.CategoryName);
+                }
             }
 
             else if (choice == "2")
@@ -263,10 +268,54 @@ try
             }
 
             else if (choice == "5")
-            {
-                 
-            }
+            {              
+                var categories = db.Categories.OrderBy(c => c.CategoryId).ToList();
+                int categoryChoice;
 
+                Console.WriteLine("Select a Category to View (Enter the Category ID):");
+
+                foreach (var category in categories)
+                {
+                    Console.WriteLine($"{category.CategoryId}) {category.CategoryName}");
+                }
+
+                Console.Write("Enter your choice: ");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out categoryChoice))
+                {
+                    var categoryWithProducts = db.Categories.Include(c => c.Products).FirstOrDefault(c => c.CategoryId == categoryChoice);
+
+                    if (categoryWithProducts != null)
+                    {
+                        Console.WriteLine($"You selected: {categoryWithProducts.CategoryName}");
+                        Console.WriteLine("Products in this category:");
+
+                        if (categoryWithProducts.Products.Any())
+                        {
+                            foreach (var product in categoryWithProducts.Products)
+                            {
+                                Console.WriteLine($"\t{product.ProductName}");
+                                logger.Info($"Products in {input} printed");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No products found in this category.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Category not found. Please enter a valid Category ID.");
+                        logger.Error("Invalid Input");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a numeric value.");
+                    logger.Error("Invalid Input");
+                }
+            }
         }
 
     } while (choice.ToLower() != "q");
