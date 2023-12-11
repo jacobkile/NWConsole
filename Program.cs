@@ -236,7 +236,36 @@ try
 
             else if (choice == "2")
             {
+                Console.WriteLine("Enter the Category ID you want to edit:");
+                if (int.TryParse(Console.ReadLine(), out int categoryId))
+                {
+                    var category = db.Categories.FirstOrDefault(c => c.CategoryId == categoryId);
+                    if (category != null)
+                    {
+                        Console.WriteLine("Current Category Details:");
+                        Console.WriteLine($"Category Name: {category.CategoryName}");
+                        Console.WriteLine($"Description: {category.Description}");
 
+                        Console.WriteLine("\nEnter New Category Details:");
+
+                        Console.WriteLine("Enter Category Name:");
+                        category.CategoryName = Console.ReadLine();
+
+                        Console.WriteLine("Enter Description:");
+                        category.Description = Console.ReadLine();
+
+                        db.EditCategory(category);
+                        logger.Info("Category Edited - Category ID: {CategoryId}", category.CategoryId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Category not found.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid Category ID.");
+                }
             }
 
             else if (choice == "3")
