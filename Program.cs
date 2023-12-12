@@ -137,33 +137,36 @@ try
                 Console.WriteLine("2) Display All Discontiued Products");
                 Console.WriteLine("3) Display All Active Products");
                 choice = Console.ReadLine();
-                if (choice =="1")
+                if (choice =="1")//All Product
                 {
                     var query = db.Products.OrderBy(p => p.ProductId);
 
                     Console.WriteLine($"{query.Count()} Products Returned");
+                    logger.Info($"Displayed all product");
                     foreach (var item in query)
                     {
                         Console.WriteLine(item.ProductName);
                     }
                 }
 
-                else if (choice == "2")
+                else if (choice == "2")//Discontinued Product
                 {
                     var query = db.Products.Where(p => p.Discontinued).OrderBy(p => p.ProductId);
 
                     Console.WriteLine($"Discontinued Products Returned: {query.Count()}");
+                    logger.Info($"Displayed discontinued product");
                     foreach (var item in query)
                     {
                         Console.WriteLine(item.ProductName);
                     }
                 }
 
-                else if (choice == "3")
+                else if (choice == "3")//Active Product
                 {
                     var query = db.Products.Where(p => !p.Discontinued).OrderBy(p => p.ProductId);
 
                     Console.WriteLine($"Discontinued Products Returned: {query.Count()}");
+                    logger.Info($"Displayed Active product");
                     foreach (var item in query)
                     {
                         Console.WriteLine(item.ProductName);
@@ -197,6 +200,7 @@ try
                         Console.WriteLine($"Units On Order: {product.UnitsOnOrder}");
                         Console.WriteLine($"Reorder Level: {product.ReorderLevel}");
                         Console.WriteLine($"Discontinued: {product.Discontinued}");
+                        logger.Info($"{product.ProductName} information displayed");
                     }
                     else
                     {
@@ -413,7 +417,7 @@ static Product InputProduct(Logger logger)
             {
                 product.Discontinued = discontinued;
             }
-
+        logger.Info($"{product} was added");
         return product;
         }
 static Category InputCategory(Logger logger)
@@ -435,5 +439,6 @@ static Category InputCategory(Logger logger)
         Console.WriteLine("Enter Category Description:");
         category.Description = Console.ReadLine();
 
+        logger.Info($"{category} was added");
         return category;
         }
