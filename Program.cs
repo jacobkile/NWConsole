@@ -224,7 +224,7 @@ try
             Console.Clear();
             logger.Info("Category option {choice} selected", choice);
 
-            if (choice == "1")
+            if (choice == "1") //Add Category
             {
                 Category category = InputCategory(logger);
                 if (category != null)
@@ -234,7 +234,7 @@ try
                 }
             }
 
-            else if (choice == "2")
+            else if (choice == "2")//Edit Category
             {
                 Console.WriteLine("Enter the Category ID you want to edit:");
                 if (int.TryParse(Console.ReadLine(), out int categoryId))
@@ -268,7 +268,7 @@ try
                 }
             }
 
-            else if (choice == "3")
+            else if (choice == "3")//Display Category Name and Description
             {
                 var query = db.Categories.OrderBy(c => c.CategoryId);
 
@@ -279,7 +279,7 @@ try
                 }
             }
 
-            else if (choice == "4")
+            else if (choice == "4")//Display Category Name and the product data
             {
                var query = db.Categories.Include(p => p.Products).OrderBy(c => c.CategoryId).ToList();
 
@@ -296,7 +296,7 @@ try
                 } 
             }
 
-            else if (choice == "5")
+            else if (choice == "5")//Display Specific Category Info
             {              
                 var categories = db.Categories.OrderBy(c => c.CategoryId).ToList();
                 int categoryChoice;
@@ -335,13 +335,11 @@ try
                     }
                     else
                     {
-                        Console.WriteLine("Category not found. Please enter a valid Category ID.");
                         logger.Error("Invalid Input");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input. Please enter a numeric value.");
                     logger.Error("Invalid Input");
                 }
             }
